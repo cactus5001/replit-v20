@@ -1,0 +1,52 @@
+modules = ["nodejs-20", "web", "postgresql-16"]
+
+[nix]
+channel = "stable-25_05"
+
+[agent]
+expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Frontend"
+
+[[workflows.workflow]]
+name = "Frontend"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 37483
+externalPort = 3001
+
+[[ports]]
+localPort = 39443
+externalPort = 3003
+
+[[ports]]
+localPort = 42329
+externalPort = 3000
+
+[deployment]
+deploymentTarget = "autoscale"
+run = ["npm", "start"]
+build = ["npm", "run", "build"]
